@@ -1,0 +1,153 @@
+﻿<UserControl x:Class="Electronics_store_db_wpf.MVVM.View.ClientView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Electronics_store_db_wpf.MVVM.View" 
+             xmlns:convert="clr-namespace:Electronics_store_db_wpf.Converter"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="1000" >
+    
+    <UserControl.Resources>
+        <convert:DefaultImageConverter x:Key="DefaultImageConverter"/>
+        <convert:ColorRowConverter x:Key="ColorRowConverter" />
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="120"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+
+
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="0" Grid.Column="0">
+                <Label Content="Фамилия:" Style="{StaticResource CustomLabelDarkStyle}"/>
+                <TextBox  Grid.Row="0" Grid.Column="0" Text="{Binding FilterOptions.Surname}"
+                   Margin="10" Style="{StaticResource CustomTextBoxDarkStyle}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="0" Grid.Column="1">
+                <Label Content="Имя:" Style="{StaticResource CustomLabelDarkStyle}"/>
+                <TextBox  Grid.Row="0" Grid.Column="1" Text="{Binding FilterOptions.FirstName}"
+                  Margin="10" Style="{StaticResource CustomTextBoxDarkStyle}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="0" Grid.Column="2">
+                <Label Content="Отчество:" Style="{StaticResource CustomLabelDarkStyle}"/>
+                <TextBox  Grid.Row="0" Grid.Column="2" Text="{Binding FilterOptions.Patronymic}"
+                   Margin="10" Style="{StaticResource CustomTextBoxDarkStyle}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="0">
+                <Label Content="Email:"  Style="{StaticResource CustomLabelDarkStyle}"/>
+                <TextBox  Grid.Row="0" Grid.Column="3" Text="{Binding FilterOptions.Email}"
+                  Margin="10" Style="{StaticResource CustomTextBoxDarkStyle}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="1">
+                <Label Content="Телефон:"  Style="{StaticResource CustomLabelDarkStyle}"/>
+                <TextBox  Grid.Row="0" Grid.Column="4" Text="{Binding FilterOptions.Phone}"
+                    Margin="10" Style="{StaticResource CustomTextBoxDarkStyle}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="0" Grid.Column="3">
+                <Label Content="Дата рождения от:"  Style="{StaticResource CustomLabelDarkStyle}"/>
+                <DatePicker x:Name="StartDatePicker" Style="{StaticResource CustomDatePickerDarkStyle}"
+                            SelectedDate="{Binding FilterOptions.StartDate}" 
+                            Margin="0,10"
+                            DisplayDateStart="01/01/2000" DisplayDateEnd="12/31/2022" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="3">
+                <Label Content="Дата рождения до:"  Style="{StaticResource CustomLabelDarkStyle}"/>
+
+                <DatePicker x:Name="EndDatePicker" Style="{StaticResource CustomDatePickerDarkStyle}"
+                            SelectedDate="{Binding FilterOptions.EndDate}" 
+                            Margin="0,10"
+                            DisplayDateStart="01/01/2000" DisplayDateEnd="12/31/2022" />
+
+            </StackPanel>
+
+            <Button Grid.Row="0" Grid.Column="4" Margin="10" Command="{Binding UpdateDataCommand}"
+                 Content="Обновить" Style="{StaticResource CustomButtonDarkStyle}"/>
+
+            <Button Grid.Row="1" Grid.Column="4" Margin="10"
+                Command="{Binding FilterCommand}" 
+                    Content="Фильтр" Style="{StaticResource CustomButtonDarkStyle}"/>
+
+        </Grid>
+        <DataGrid  x:Name="dgClients" Grid.Row="1"   
+                    AutoGenerateColumns="False" IsReadOnly="False" 
+                  ColumnWidth="*" Style="{StaticResource CustomDataGridDarkStyle}"
+                  ItemsSource="{Binding Path=Clients}" 
+                  SelectedItem="{Binding Path=SelectedClient, 
+                   TargetNullValue={x:Static CollectionView.NewItemPlaceholder}}"
+                  SelectionMode="Extended">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" 
+                            Value="{Binding ErrorValidation.HasError, 
+                        Converter={StaticResource ColorRowConverter}}" />
+                </Style>
+            </DataGrid.RowStyle>
+
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="AddingNewItem">
+                    <i:InvokeCommandAction 
+                        Command="{Binding AddingNewItemToDgClientCommand}"
+                                           PassEventArgsToCommand="True"   />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            
+            <DataGrid.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" 
+                            CommandParameter="{Binding SelectedItems, ElementName=dgClients}"/>
+            </DataGrid.InputBindings>
+
+
+            <DataGrid.Columns >
+                <DataGridTextColumn Header="Фамилия" FontSize="16"  
+                                    Binding="{Binding Path=DatabaseModel.Surname}" />
+                <DataGridTextColumn Header="Имя" FontSize="16" 
+                                    Binding="{Binding Path=DatabaseModel.FirstName}"/>
+                <DataGridTextColumn Header="Отчество"  FontSize="16" 
+                                    Binding="{Binding Path=DatabaseModel.Patronymic}"/>
+                <DataGridTextColumn Header="Email"  FontSize="16" 
+                                    Binding="{Binding Path=DatabaseModel.Email}"/>
+                <DataGridTextColumn Header="Телефон"  FontSize="16" 
+                                    Binding="{Binding Path=DatabaseModel.Phone}"/>
+
+                <DataGridTemplateColumn Header="Дата рождения">
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding DatabaseModel.Birthday}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DatabaseModel.Birthday, StringFormat=\{0:dd.MM.yyyy\}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+</UserControl>

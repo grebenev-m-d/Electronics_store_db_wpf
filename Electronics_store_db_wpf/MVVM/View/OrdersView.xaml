@@ -1,0 +1,266 @@
+﻿<UserControl x:Class="Electronics_store_db_wpf.MVVM.View.OrdersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Electronics_store_db_wpf.MVVM.View" 
+             xmlns:convert="clr-namespace:Electronics_store_db_wpf.Converter"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+
+    <UserControl.Resources>
+        <convert:ColorRowConverter x:Key="ColorRowConverter" />
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+
+            <StackPanel Grid.Row="0" Grid.Column="0">
+                <Label Content="Фамилия:" Style="{StaticResource CustomLabelDarkStyle}"/>
+                <TextBox Text="{Binding FilterOptionsClients.Surname}"
+                 Style="{StaticResource CustomTextBoxDarkStyle}" Margin="10"  
+                  />
+            </StackPanel>
+
+            <StackPanel Grid.Row="0" Grid.Column="1">
+                <Label Content="Имя:" Style="{StaticResource CustomLabelDarkStyle}"/>
+                <TextBox Text="{Binding FilterOptionsClients.FirstName}"
+                         Style="{StaticResource CustomTextBoxDarkStyle}"
+                   Margin="10"  
+                  />
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="0">
+                <Label Content="Отчество:"  Style="{StaticResource CustomLabelDarkStyle}"/>
+                <TextBox Text="{Binding FilterOptionsClients.Patronymic}"
+                         Style="{StaticResource CustomTextBoxDarkStyle}"
+                         Margin="10"/>
+            </StackPanel>
+
+            <Button Grid.Row="1" Grid.Column="1" Margin="10" Style="{StaticResource CustomButtonDarkStyle}"
+                    Content="Фильтр" Command="{Binding FilterToDgClientsCommand}"/>
+
+
+            <DataGrid x:Name="dgClients" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                   AutoGenerateColumns="False" IsReadOnly="True" 
+                      Style="{StaticResource CustomDataGridDarkStyle}"
+                  ColumnWidth="*" ItemsSource="{Binding Path=ClientsCollection}" 
+                  SelectedItem="{Binding Path=SelectedClient, 
+                   TargetNullValue={x:Static CollectionView.NewItemPlaceholder}}"
+                  SelectionMode="Extended">
+
+                <DataGrid.Columns >
+                    <DataGridTextColumn Header="Фамилия" FontSize="16"  
+                                    Binding="{Binding Path=Surname}" />
+                    <DataGridTextColumn Header="Имя" FontSize="16"  
+                                    Binding="{Binding Path=FirstName}" />
+                    <DataGridTextColumn Header="Отчество" FontSize="16"  
+                                    Binding="{Binding Path=Patronymic}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+
+            <StackPanel Grid.Row="0" Grid.Column="0">
+                <Label Content="Мин. Сумма:" Style="{StaticResource CustomLabelDarkStyle}"/>
+                <TextBox Text="{Binding FilterOptionsOrders.MinAmount}"
+                  Margin="10" Style="{StaticResource CustomTextBoxDarkStyle}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="0">
+                <Label Content="Макс. Сумма:" Style="{StaticResource CustomLabelDarkStyle}"/>
+                <TextBox Text="{Binding FilterOptionsOrders.MaxAmount}"
+                   Margin="10" Style="{StaticResource CustomTextBoxDarkStyle}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="0" Grid.Column="1">
+                <Label Content="Дата заказа от:" Style="{StaticResource CustomLabelDarkStyle}"/>
+                <TextBox Text="{Binding FilterOptionsOrders.StartDate}"
+                 Margin="10"  Style="{StaticResource CustomTextBoxDarkStyle}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="1">
+                <Label Content="Дата заказа до:" Style="{StaticResource CustomLabelDarkStyle}"/>
+                <TextBox Text="{Binding FilterOptionsOrders.EndDate}"
+                  Margin="10"  Style="{StaticResource CustomTextBoxDarkStyle}"/>
+            </StackPanel>
+
+            <Button Grid.Row="2" Grid.Column="0" Margin="10"
+                    Style="{StaticResource CustomButtonDarkStyle}"
+                    Content="Обновить" Command="{Binding UpdateDataCommand}"/>
+
+            <Button Grid.Row="2" Grid.Column="1" Margin="10"
+                    Style="{StaticResource CustomButtonDarkStyle}"
+                    Content="Фильтр" Command="{Binding FilterToDgOrdersCommand}"/>
+
+
+            <DataGrid x:Name="dgOrders" Grid.Row="3" Grid.Column="0"  Grid.ColumnSpan="2"
+                   AutoGenerateColumns="False" IsReadOnly="False" 
+                      Style="{StaticResource CustomDataGridDarkStyle}"
+                  ColumnWidth="*" ItemsSource="{Binding Path=OrdersCollection, UpdateSourceTrigger=PropertyChanged}" 
+                  SelectedItem="{Binding Path=SelectedOrder, UpdateSourceTrigger=PropertyChanged, 
+                   TargetNullValue={x:Static CollectionView.NewItemPlaceholder}}"
+                  SelectionMode="Extended">
+
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background" 
+                            Value="{Binding ErrorValidation.HasError, 
+                        Converter={StaticResource ColorRowConverter}}" />
+                    </Style>
+                </DataGrid.RowStyle>
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="AddingNewItem">
+                        <i:InvokeCommandAction Command="{Binding AddingNewItemToDgOrdersCommand}"
+                                           PassEventArgsToCommand="True"   />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+                <DataGrid.InputBindings>
+                    <KeyBinding Key="Delete" Command="{Binding DeleteToDgOrdersCommand}" 
+                            CommandParameter="{Binding SelectedItems, ElementName=dgOrders}"/>
+                </DataGrid.InputBindings>
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Общая сумма" FontSize="16"  
+                        Binding="{Binding Path=DatabaseModel.TotalAmount, UpdateSourceTrigger=PropertyChanged}" />
+                    <DataGridTextColumn Header="Дата заказа" FontSize="16"  
+                        Binding="{Binding Path=DatabaseModel.OrderDate,StringFormat={}{0:MM dd yyyy HH:mm}}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.Column="0" >
+                <Label Content="Продукт:" Style="{StaticResource CustomLabelDarkStyle}"/>
+
+                <ComboBox IsEditable="True"
+              Text="{Binding FilterOptionsOrderItems.ProductName}"  
+              Background="#303030" BorderBrush="#1A1A1A"  
+                          Style="{StaticResource CustomComboBoxDarkStyle}"
+                          MinHeight="30" FontSize="15" Margin="0,10"
+                          ItemsSource="{Binding ProductNamesList}" DisplayMemberPath="Name"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="0" Grid.Column="1" >
+                <Label Content="Мин. Количество:" Style="{StaticResource CustomLabelDarkStyle}"/>
+
+                <TextBox Text="{Binding FilterOptionsOrderItems.MinQuantity}"
+                         Margin="10" Style="{StaticResource CustomTextBoxDarkStyle}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="1" >
+                <Label Content="Макс. Количество:" Style="{StaticResource CustomLabelDarkStyle}"/>
+
+                <TextBox Text="{Binding FilterOptionsOrderItems.MaxQuantity}"
+                   Margin="10" Style="{StaticResource CustomTextBoxDarkStyle}"/>
+            </StackPanel>
+
+            <Button Grid.Row="1" Grid.Column="0" Margin="10"
+                    Style="{StaticResource CustomButtonDarkStyle}"
+                    Content="Фильтр" Command="{Binding FilterToDgOrderItemsCommand}" />
+
+            <DataGrid x:Name="dgOrderItems" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                   AutoGenerateColumns="False" IsReadOnly="False" 
+                      Style="{StaticResource CustomDataGridDarkStyle}"
+                  ColumnWidth="*" ItemsSource="{Binding Path=OrderItemsCollection,Mode=TwoWay}" 
+                  SelectedItem="{Binding Path=SelectedOrderItem, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay,
+                   TargetNullValue={x:Static CollectionView.NewItemPlaceholder}}"
+                  SelectionMode="Extended" CanUserAddRows="True">
+
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background" 
+                            Value="{Binding ErrorValidation.HasError, 
+                        Converter={StaticResource ColorRowConverter}}" />
+                    </Style>
+                </DataGrid.RowStyle>
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="AddingNewItem">
+                        <i:InvokeCommandAction Command="{Binding AddingNewItemToDgOrderItemsCommand}"
+                                           PassEventArgsToCommand="True"   />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+                <DataGrid.InputBindings>
+                    <KeyBinding Key="Delete" Command="{Binding DeleteToDgOrderItemsCommand}" 
+                            CommandParameter="{Binding SelectedItems, ElementName=dgOrderItems}"/>
+                    <KeyBinding Key="Insert" Command="{Binding AddingNewItemToDgOrderItemsCommand}" />
+                </DataGrid.InputBindings>
+
+                <DataGrid.Columns >
+                    <DataGridTemplateColumn Header="Продукт">
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <ComboBox IsEditable="True" x:Name="Username"  
+                                      Text="{Binding DatabaseModel.Product.Name, Mode=TwoWay}" Margin="5" 
+                                      Background="#303030" BorderBrush="#1A1A1A"  
+                                      Height="25" FontSize="15"  
+                                      ItemsSource="{Binding DataContext.ProductNamesList,Mode=TwoWay, 
+                                      RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" 
+                                      SelectedValue="{Binding DatabaseModel.Product, Mode=TwoWay}"
+                                      DisplayMemberPath="Name"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=DatabaseModel.Product.Name, 
+                                    Mode=TwoWay}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTextColumn Header="Количество" FontSize="16"  
+                                    Binding="{Binding Path=DatabaseModel.Quantity ,UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <DataGridTextColumn Header="Сумма" FontSize="16" IsReadOnly="True"
+                                   Binding="{Binding Path=DatabaseModel.Amount,UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:C0}₽}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</UserControl>
